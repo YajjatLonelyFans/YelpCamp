@@ -1,0 +1,360 @@
+<% layout('layouts/boilerplate') %>
+<link rel="stylesheet" href="/stylesheets/star.css">
+
+<!-- Hero Section -->
+<div class="bg-light py-4 mb-5">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/campgrounds" class="text-decoration-none">Campgrounds</a></li>
+                <li class="breadcrumb-item active text-muted" aria-current="page"><%= campground.title %></li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row g-5">
+        <!-- Main Content Column -->
+        <div class="col-lg-8">
+            <!-- Image Section -->
+            <div class="card border-0 shadow-lg rounded-4 mb-4">
+                <% if (campground.image.length > 1) { %>
+                    <div id="campgroundCarousel" class="carousel slide rounded-4 position-relative" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <% campground.image.forEach((img, index) => { %>
+                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                                    <img src="<%= img.url %>" class="d-block w-100 rounded-4" style="object-fit:cover; height:400px;" alt="<%= campground.title %>">
+                                </div>
+                            <% }) %>
+                        </div>
+                        <div class="carousel-indicators">
+                            <% campground.image.forEach((img, index) => { %>
+                                <button type="button" data-bs-target="#campgroundCarousel" data-bs-slide-to="<%= index %>" 
+                                        class="<%= index === 0 ? 'active' : '' %>" aria-label="Slide <%= index + 1 %>"></button>
+                            <% }) %>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-dark bg-opacity-75 text-white px-3 py-2 rounded-pill">
+                                <i class="fas fa-images me-1"></i><%= campground.image.length %> photos
+                            </span>
+                        </div>
+                    </div>
+                <% } else if (campground.image.length === 1) { %>
+                    <div class="position-relative">
+                        <img src="<%= campground.image[0].url %>" class="card-img rounded-4" style="object-fit:cover; height:400px;" alt="<%= campground.title %>">
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-dark bg-opacity-75 text-white px-3 py-2 rounded-pill">
+                                <i class="fas fa-image me-1"></i>1 photo
+                            </span>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="bg-light d-flex align-items-center justify-content-center rounded-4" style="height: 400px;">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-mountain fa-4x mb-3"></i>
+                            <p class="fs-5">No images available</p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Campground Details -->
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h1 class="display-6 fw-bold text-dark mb-2"><%= campground.title %></h1>
+                            <div class="d-flex align-items-center text-muted mb-2">
+                                <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+                                <span class="fs-6"><%= campground.location %></span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="display-6 fw-bold text-success mb-1">$<%= campground.price %></div>
+                            <small class="text-muted">per night</small>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-primary border-0 rounded-3 mb-4" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>About this place:</strong>
+                    </div>
+                    
+                    <p class="fs-5 text-muted leading-relaxed mb-4"><%= campground.description %></p>
+
+                    <!-- Host Information -->
+                    <div class="bg-light rounded-3 p-3 mb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <i class="fas fa-user text-white fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1 fw-semibold">Hosted by <%= campground.author.username %></h6>
+                                <small class="text-muted">Campground owner</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <% if(currentUser && campground.author.equals(currentUser)) { %>
+                        <div class="d-flex gap-3 mb-4">
+                            <a class="btn btn-outline-primary btn-lg px-4 rounded-pill flex-fill" href="/campgrounds/<%= campground._id %>/edit">
+                                <i class="fas fa-edit me-2"></i>Edit Campground
+                            </a>
+                            <form action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST" class="flex-fill">
+                                <button class="btn btn-outline-danger btn-lg px-4 rounded-pill w-100" 
+                                        onclick="return confirm('Are you sure you want to delete this campground?');">
+                                    <i class="fas fa-trash me-2"></i>Delete Campground
+                                </button>
+                            </form>
+                        </div>
+                    <% } %>
+
+                    <!-- Amenities/Features -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                                <i class="fas fa-fire text-warning me-3 fs-4"></i>
+                                <span class="fw-semibold">Fire Pit</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                                <i class="fas fa-hiking text-success me-3 fs-4"></i>
+                                <span class="fw-semibold">Hiking Trails</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                                <i class="fas fa-water text-info me-3 fs-4"></i>
+                                <span class="fw-semibold">Water Access</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Section -->
+            <div class="card border-0 shadow-lg rounded-4 mt-4">
+                <div class="card-header bg-white border-0 rounded-top-4 py-3">
+                    <h3 class="card-title mb-0 fw-semibold">
+                        <i class="fas fa-map me-2 text-primary"></i>Location
+                    </h3>
+                    <small class="text-muted">Interactive map showing campground location</small>
+                </div>
+                <div class="card-body p-0">
+                    <div id="map" class="rounded-bottom-4" style="height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Column -->
+        <div class="col-lg-4">
+            <!-- Reviews Section -->
+            <% if (currentUser) { %>
+                <div class="card border-0 shadow-lg rounded-4 mb-4">
+                    <div class="card-header bg-primary text-white rounded-top-4 py-4">
+                        <h4 class="mb-0 fw-bold">
+                            <i class="fas fa-star me-2"></i>Leave a Review
+                        </h4>
+                        <small class="opacity-75">Share your experience with other campers</small>
+                    </div>
+                    <div class="card-body p-4">
+                        <form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="needs-validation" novalidate>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold mb-3" for="rating">
+                                    <i class="fas fa-star-half-alt text-warning me-1"></i>Rating
+                                </label>
+                                <input class="form-range mb-2" type="range" min="1" max="5" name="review[rating]" id="rating" required 
+                                       style="accent-color: #ffc107;" oninput="updateRatingDisplay(this.value)">
+                                <div class="d-flex justify-content-between small text-muted">
+                                    <span>Poor</span>
+                                    <span id="ratingValue" class="fw-bold text-warning">3</span>
+                                    <span>Excellent</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold" for="body">
+                                    <i class="fas fa-pen me-1"></i>Your Review
+                                </label>
+                                <textarea class="form-control rounded-3 border-2" name="review[body]" id="body" rows="4" required 
+                                          placeholder="Tell us about your stay..."></textarea>
+                                <div class="invalid-feedback">Please enter your review.</div>
+                            </div>
+                            
+                            <button class="btn btn-success btn-lg w-100 rounded-pill shadow-sm hover-lift" type="submit">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Review
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <% } %>
+
+            <!-- Reviews Display -->
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-white border-0 rounded-top-4 py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0 fw-bold">
+                            <i class="fas fa-comments me-2 text-primary"></i>Reviews
+                        </h4>
+                        <% if (campground.reviews && campground.reviews.length > 0) { %>
+                            <span class="badge bg-primary bg-gradient px-3 py-2 rounded-pill">
+                                <%= campground.reviews.length %> review<%= campground.reviews.length !== 1 ? 's' : '' %>
+                            </span>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div class="card-body p-0">
+                    <% if (campground.reviews && campground.reviews.length > 0) { %>
+                        <% campground.reviews.forEach((review, index) => { %>
+                            <div class="p-4 <%= index !== campground.reviews.length - 1 ? 'border-bottom' : '' %>">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0" 
+                                         style="width: 40px; height: 40px;">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="mb-0 fw-semibold"><%= review.author.username %></h6>
+                                            <small class="text-muted">2 days ago</small>
+                                        </div>
+                                        <div class="starability-result mb-2" data-rating="<%= review.rating %>"></div>
+                                    </div>
+                                </div>
+                                
+                                <p class="text-muted mb-3 lh-base"><%= review.body %></p>
+                                
+                                <% if(currentUser && review.author.equals(currentUser)) { %>
+                                    <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                                        <button class="btn btn-sm btn-outline-danger rounded-pill px-3 hover-lift">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </button>
+                                    </form>
+                                <% } %>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="p-5 text-center">
+                            <i class="fas fa-comment-slash text-muted mb-3" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mb-2">No Reviews Yet</h5>
+                            <p class="text-muted mb-0">Be the first to share your experience!</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Quick Info Card -->
+            <div class="card border-0 shadow-lg rounded-4 mt-4">
+                <div class="card-header bg-light border-0 rounded-top-4 py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="fas fa-info-circle me-2 text-info"></i>Quick Info
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 py-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-dollar-sign text-success me-3"></i>
+                                <span class="fw-semibold">Price per night</span>
+                            </div>
+                            <span class="badge bg-success bg-gradient px-3 py-2 rounded-pill fs-6">$<%= campground.price %></span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 py-3 bg-light">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-calendar text-primary me-3"></i>
+                                <span class="fw-semibold">Added</span>
+                            </div>
+                            <span class="text-muted">2 days ago</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 py-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-eye text-info me-3"></i>
+                                <span class="fw-semibold">Views</span>
+                            </div>
+                            <span class="text-muted">142</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .leading-relaxed {
+        line-height: 1.7;
+    }
+    
+    .carousel-item img {
+        transition: transform 0.3s ease;
+    }
+    
+    .carousel:hover .carousel-item img {
+        transform: scale(1.02);
+    }
+    
+    .card {
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .breadcrumb-item a:hover {
+        text-decoration: underline !important;
+    }
+    
+    .form-range::-webkit-slider-thumb {
+        background: #ffc107;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    
+    .form-range::-moz-range-thumb {
+        background: #ffc107;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    
+    @media (max-width: 768px) {
+        .display-6 {
+            font-size: 1.75rem;
+        }
+        
+        .carousel-item img, .card-img {
+            height: 250px !important;
+        }
+        
+        #map {
+            height: 250px !important;
+        }
+    }
+</style>
+
+<script>
+  const mapToken = "<%= maptilerKey %>";
+  const campground = <%- JSON.stringify(campground) %>;
+  
+  function updateRatingDisplay(value) {
+      document.getElementById('ratingValue').textContent = value;
+  }
+</script>
+<script src="/javascript/showmaps.js"></script>

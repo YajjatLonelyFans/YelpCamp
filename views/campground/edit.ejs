@@ -1,0 +1,68 @@
+<% layout('layouts/boilerplate') %>
+<div class="row">
+    <h1 class="text-center">Edit Campground</h1>
+    <div class="col-6 offset-3">
+        <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" type="text" id="title" name="campground[title]" value="<%= campground.title %>" required>
+                <div class="invalid-feedback">Please provide a title.</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="location">Location</label>
+                <input class="form-control" type="text" id="location" name="campground[location]" value="<%= campground.location %>" required>
+                <div class="invalid-feedback">Please provide a location.</div>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Add Images</label>
+                <input class="form-control" type="file" id="image" name="image" multiple>
+                <ul id="file-names" class="form-text mt-2 ps-3"></ul>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="price">Campground Price</label>
+                <div class="input-group"> 
+                    <span class="input-group-text" id="price-label">$</span>
+                    <input type="number" min="0" class="form-control" id="price" placeholder="0" aria-label="price" aria-describedby="price-label" name="campground[price]" value="<%= campground.price %>" required>
+                    <div class="invalid-feedback">Please enter a valid price.</div>
+                </div>
+            </div> 
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" id="description" name="campground[description]" required><%= campground.description %></textarea>
+                <div class="invalid-feedback">Please provide a description.</div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-info">Update Campground</button>
+            </div>
+        </form>
+        <a href="/campgrounds">Back to Campgrounds</a>
+    </div>
+</div>
+
+<script>
+(() => {
+  'use strict'
+  const forms = document.querySelectorAll('.needs-validation')
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      form.classList.add('was-validated')
+    }, false)
+  })
+
+  const fileInput = document.getElementById('image')
+  const fileNamesList = document.getElementById('file-names')
+
+  fileInput.addEventListener('change', () => {
+    fileNamesList.innerHTML = ''
+    Array.from(fileInput.files).forEach(file => {
+      const li = document.createElement('li')
+      li.textContent = file.name
+      fileNamesList.appendChild(li)
+    })
+  })
+})()
+</script>
