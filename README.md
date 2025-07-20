@@ -6,7 +6,7 @@ A full-stack web application for discovering, reviewing, and sharing campgrounds
 
 ## Table of Contents
 
-- [Demo](#demo)
+
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
@@ -17,13 +17,7 @@ A full-stack web application for discovering, reviewing, and sharing campgrounds
 
 ---
 
-## Demo
 
-<!-- If deployed, add your live link here -->
-[Live Demo](#)  
-![YelpCamp Screenshot](#) <!-- Add a screenshot or GIF here -->
-
----
 
 ## Features
 
@@ -146,10 +140,4 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ---
 
-## License
 
-[MIT](LICENSE)
-
----
-
-**Feel free to add screenshots, a live demo link, or any additional sections that showcase your work! If you want, I can help you write a more detailed section for any part of this README.**
