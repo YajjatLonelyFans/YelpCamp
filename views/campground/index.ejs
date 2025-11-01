@@ -158,21 +158,24 @@
     }
 </style>
 
-<script>
+<!-- Mapbox GL JS -->
+ <script>
   const mapToken = "<%= maptilerKey %>";
   const campgrounds = {
     type: "FeatureCollection",
-    features: <%- JSON.stringify(campgrounds.map(cg => ({
+    features: <%- JSON.stringify(
+      campgrounds.map(cg => ({
         type: "Feature",
         geometry: {
-            type: "Point",
-            coordinates: cg.geometry.coordinates
+          type: "Point",
+          coordinates: cg.geometry.coordinates
         },
         properties: {
-            popUpMarkup: `<strong><a href="/campgrounds/${cg._id}">${cg.title}</a></strong><p>${cg.location}</p>`
+          popUpMarkup: `<strong><a href="/campgrounds/${cg._id}">${cg.title}</a></strong><p>${cg.location}</p>`
         }
-    }))) %>
-};
+      }))
+    ) %>
+  };
 </script>
 
 <script src="/javascript/clusterMap.js"></script>
