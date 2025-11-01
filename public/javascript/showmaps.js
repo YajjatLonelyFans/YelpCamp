@@ -2,7 +2,7 @@ maptilersdk.config.apiKey = mapToken;
 
 const map = new maptilersdk.Map({
     container: 'map',
-    style: maptilersdk.MapStyle.BRIGHT,
+    style: maptilersdk.MapStyle.STREETS,
     center: campground.geometry.coordinates, // starting position [lng, lat]
     zoom: 15 // starting zoom
 });
